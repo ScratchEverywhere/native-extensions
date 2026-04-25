@@ -77,6 +77,38 @@
 						text: "Default"
 					},
 					{
+						opcode: "move",
+						blockType: Scratch.BlockType.COMMAND,
+						text: "Move widget [WIDGET] to ([X], [Y])",
+						arguments: {
+							WIDGET: {
+								type: Scratch.ArgumentType.STRING
+							},
+							X: {
+								type: Scratch.ArgumentType.NUMBER
+							},
+							Y: {
+								type: Scratch.ArgumentType.NUMBER
+							}
+						}
+					},
+					{
+						opcode: "resize",
+						blockType: Scratch.BlockType.COMMAND,
+						text: "Resize widget [WIDGET] to [WIDTH]x[HEIGHT]",
+						arguments: {
+							WIDGET: {
+								type: Scratch.ArgumentType.STRING
+							},
+							WIDTH: {
+								type: Scratch.ArgumentType.NUMBER
+							},
+							HEIGHT: {
+								type: Scratch.ArgumentType.NUMBER
+							}
+						}
+					},
+					{
 						opcode: "setInteger",
 						blockType: Scratch.BlockType.COMMAND,
 						text: "Set integer property [PROP] of widget [WIDGET] to [VALUE]",

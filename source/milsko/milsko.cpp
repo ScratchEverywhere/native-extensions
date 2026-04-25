@@ -58,6 +58,38 @@ SCRATCH_BLOCK(milsko, default) {
 	return BlockResult::CONTINUE;
 }
 
+SCRATCH_BLOCK(milsko, move) {
+	Value widgetValue, xValue, yValue;
+	MwWidget widget;
+	if(!Scratch::getInput(block, "WIDGET", thread, sprite, widgetValue)) return BlockResult::REPEAT;
+	if(!Scratch::getInput(block, "X", thread, sprite, xValue)) return BlockResult::REPEAT;
+	if(!Scratch::getInput(block, "Y", thread, sprite, yValue)) return BlockResult::REPEAT;
+
+	widget = (MwWidget)to_ptr(widgetValue);
+	MwVaApply(widget,
+		MwNx, (int)xValue.asDouble(),
+		MwNy, (int)yValue.asDouble(),
+	NULL);
+
+	return BlockResult::CONTINUE;
+}
+
+SCRATCH_BLOCK(milsko, resize) {
+	Value widgetValue, widthValue, heightValue;
+	MwWidget widget;
+	if(!Scratch::getInput(block, "WIDGET", thread, sprite, widgetValue)) return BlockResult::REPEAT;
+	if(!Scratch::getInput(block, "WIDTH", thread, sprite, widthValue)) return BlockResult::REPEAT;
+	if(!Scratch::getInput(block, "HEIGHT", thread, sprite, heightValue)) return BlockResult::REPEAT;
+
+	widget = (MwWidget)to_ptr(widgetValue);
+	MwVaApply(widget,
+		MwNwidth, (int)widthValue.asDouble(),
+		MwNheight, (int)heightValue.asDouble(),
+	NULL);
+
+	return BlockResult::CONTINUE;
+}
+
 SCRATCH_SHADOW_BLOCK(milsko_menu_WIDGET_CLASS, WIDGET_CLASS);
 
 #define TYPE(type, mtype, stype, prefix, stuff) \
