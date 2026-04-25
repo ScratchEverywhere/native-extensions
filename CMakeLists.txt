@@ -30,11 +30,26 @@ CPMAddPackage(
 
 set(EXTENSIONS "example") # Edit this to add new extensions
 
+include(CheckIncludeFile)
+
+# Milsko is very likely in /usr/local...
+list(APPEND CMAKE_REQUIRED_INCLUDES /usr/local/include)
+include_directories(/usr/local/include)
+link_directories(/usr/local/lib)
+
+check_include_file(Mw/Milsko.h HAVE_MW_MILSKO_H)
+if(HAVE_MW_MILSKO_H)
+  list(APPEND EXTENSIONS "milsko")
+endif()
+
 foreach(EXTENSION ${EXTENSIONS})
   if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/source/${EXTENSION}")
     file(GLOB SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/source/${EXTENSION}/*.cpp")
     add_extension(${EXTENSION} ${SOURCES})
   else()
     add_extension(${EXTENSION} "${CMAKE_CURRENT_SOURCE_DIR}/source/${EXTENSION}.cpp")
+  endif()
+  if(${EXTENSION} STREQUAL "milsko")
+    target_link_libraries(${EXTENSION} PRIVATE Mw)
   endif()
 endforeach()
