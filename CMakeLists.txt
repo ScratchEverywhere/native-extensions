@@ -25,7 +25,7 @@ CPMAddPackage(
   NAME ScratchEverywhere
   GITHUB_REPOSITORY ScratchEverywhere/ScratchEverywhere
   VERSION 0.40
-  GIT_TAG experiment/native-extensions
+  GIT_TAG main
 )
 
 set(EXTENSIONS "example") # Edit this to add new extensions
