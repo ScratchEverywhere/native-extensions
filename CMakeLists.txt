@@ -31,5 +31,10 @@ CPMAddPackage(
 set(EXTENSIONS "example") # Edit this to add new extensions
 
 foreach(EXTENSION ${EXTENSIONS})
-  add_extension(${EXTENSION} "${CMAKE_CURRENT_SOURCE_DIR}/source/${EXTENSION}.cpp")
+  if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/source/${EXTENSION}")
+    file(GLOB SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/source/${EXTENSION}/*.cpp")
+    add_extension(${EXTENSION} ${SOURCES})
+  else()
+    add_extension(${EXTENSION} "${CMAKE_CURRENT_SOURCE_DIR}/source/${EXTENSION}.cpp")
+  endif()
 endforeach()
