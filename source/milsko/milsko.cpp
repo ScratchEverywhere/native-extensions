@@ -16,6 +16,14 @@ static void* to_ptr(Value src){
 	return dest;
 }
 
+static std::string from_ptr(void* ptr){
+	char cptr[64];
+
+	sprintf(cptr, "%p", ptr);
+
+	return std::string(cptr);
+}
+
 SCRATCH_BLOCK(milsko, init) {
 	Log::log("Milsko initialization");
 	MwLibraryInit();
@@ -45,16 +53,23 @@ SCRATCH_BLOCK(milsko, pending) {
 }
 
 SCRATCH_BLOCK(milsko, none) {
-	char cptr[16];
-
-	sprintf(cptr, "%p", NULL);
-
-	*outValue = Value(std::string(cptr));
+	*outValue = Value(from_ptr(NULL));
 	return BlockResult::CONTINUE;
 }
 
 SCRATCH_BLOCK(milsko, default) {
 	*outValue = Value(MwDEFAULT);
+	return BlockResult::CONTINUE;
+}
+
+SCRATCH_BLOCK(milsko, destroy) {
+	Value widgetValue;
+	MwWidget widget;
+	if(!Scratch::getInput(block, "WIDGET", thread, sprite, widgetValue)) return BlockResult::REPEAT;
+
+	widget = (MwWidget)to_ptr(widgetValue);
+	MwDestroyWidget(widget);
+
 	return BlockResult::CONTINUE;
 }
 
@@ -92,7 +107,7 @@ SCRATCH_BLOCK(milsko, resize) {
 
 SCRATCH_SHADOW_BLOCK(milsko_menu_WIDGET_CLASS, WIDGET_CLASS);
 
-#define TYPE(type, mtype, stype, prefix, stuff) \
+#define TYPE(type, mtype, stype, prefix, stuff, stuff2) \
 SCRATCH_SHADOW_BLOCK(milsko_menu_ ## stype ## _PROP, stype ## _PROP); \
 SCRATCH_BLOCK(milsko, set ## type) { \
 	Value widgetValue, propValue, valueValue; \
@@ -105,16 +120,26 @@ SCRATCH_BLOCK(milsko, set ## type) { \
 	MwSet ## mtype(widget, (prefix + propValue.asString()).c_str(), stuff); \
 \
 	return BlockResult::CONTINUE; \
+} \
+SCRATCH_BLOCK(milsko, get ## type) { \
+	Value widgetValue, propValue; \
+	MwWidget widget; \
+	if(!Scratch::getInput(block, "WIDGET", thread, sprite, widgetValue)) return BlockResult::REPEAT; \
+	if(!Scratch::getInput(block, "PROP", thread, sprite, propValue)) return BlockResult::REPEAT; \
+\
+	widget = (MwWidget)to_ptr(widgetValue); \
+\
+	*outValue = Value(stuff2(MwGet ## mtype(widget, (prefix + propValue.asString()).c_str()))); \
+	return BlockResult::CONTINUE; \
 }
 
-TYPE(Integer, Integer, INTEGER, "I", (int)valueValue.asDouble());
-TYPE(String, Text, STRING, "S", valueValue.asString().c_str());
-TYPE(Void, Void, VOID, "V", to_ptr(valueValue));
+TYPE(Integer, Integer, INTEGER, "I", (int)valueValue.asDouble(), (int));
+TYPE(String, Text, STRING, "S", valueValue.asString().c_str(), std::string);
+TYPE(Void, Void, VOID, "V", to_ptr(valueValue), from_ptr);
 
 SCRATCH_BLOCK(milsko, create) {
 	Value widgetClassValue, nameValue, xValue, yValue, widthValue, heightValue, parentValue;
 	MwWidget widget, parent;
-	char cptr[64];
 	MwClass widget_class = NULL;
 	if(!Scratch::getInput(block, "WIDGET_CLASS", thread, sprite, widgetClassValue)) return BlockResult::REPEAT;
 	if(!Scratch::getInput(block, "NAME", thread, sprite, nameValue)) return BlockResult::REPEAT;
@@ -123,8 +148,6 @@ SCRATCH_BLOCK(milsko, create) {
 	if(!Scratch::getInput(block, "WIDTH", thread, sprite, widthValue)) return BlockResult::REPEAT;
 	if(!Scratch::getInput(block, "HEIGHT", thread, sprite, heightValue)) return BlockResult::REPEAT;
 	if(!Scratch::getInput(block, "PARENT", thread, sprite, parentValue)) return BlockResult::REPEAT;
-
-	std::cout << widgetClassValue.asString() << std::endl;
 
 #define WIDGET(x) \
 	if(widgetClassValue.asString() == #x){ \
@@ -160,8 +183,6 @@ SCRATCH_BLOCK(milsko, create) {
 	
 	widget = MwCreateWidget(widget_class, nameValue.asString().c_str(), parent, (int)(xValue.asDouble()), (int)(yValue.asDouble()), (unsigned int)(widthValue.asDouble()), (unsigned int)(heightValue.asDouble()));
 	
-	sprintf(cptr, "%p", widget);
-	
-	*outValue = Value(std::string(cptr));
+	*outValue = Value(from_ptr((void*)widget));
 	return BlockResult::CONTINUE;
 }

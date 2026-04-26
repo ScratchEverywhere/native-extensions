@@ -77,6 +77,16 @@
 						text: "Default"
 					},
 					{
+						opcode: "destroy",
+						blockType: Scratch.BlockType.COMMAND,
+						text: "Destroy widget [WIDGET]",
+						arguments: {
+							WIDGET: {
+								type: Scratch.ArgumentType.STRING
+							}
+						}
+					}
+					{
 						opcode: "move",
 						blockType: Scratch.BlockType.COMMAND,
 						text: "Move widget [WIDGET] to ([X], [Y])",
@@ -156,6 +166,48 @@
 							},
 							VALUE: {
 								type: Scratch.ArgumentType.STRING
+							}
+						}
+					},
+					{
+						opcode: "getInteger",
+						blockType: Scratch.BlockType.REPORTER,
+						text: "Get integer property [PROP] of widget [WIDGET]",
+						arguments: {
+							WIDGET: {
+								type: Scratch.ArgumentType.STRING
+							},
+							PROP: {
+								type: Scratch.ArgumentType.STRING,
+								menu: "INTEGER_PROP"
+							}
+						}
+					},
+					{
+						opcode: "getString",
+						blockType: Scratch.BlockType.REPORTER,
+						text: "Get string property [PROP] of widget [WIDGET]",
+						arguments: {
+							WIDGET: {
+								type: Scratch.ArgumentType.STRING
+							},
+							PROP: {
+								type: Scratch.ArgumentType.STRING,
+								menu: "STRING_PROP"
+							}
+						}
+					},
+					{
+						opcode: "getVoid",
+						blockType: Scratch.BlockType.REPORTER,
+						text: "Get void property [PROP] of widget [WIDGET]",
+						arguments: {
+							WIDGET: {
+								type: Scratch.ArgumentType.STRING
+							},
+							PROP: {
+								type: Scratch.ArgumentType.STRING,
+								menu: "VOID_PROP"
 							}
 						}
 					},

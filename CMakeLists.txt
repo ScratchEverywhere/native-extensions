@@ -21,6 +21,8 @@ if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/cmake/CPM.cmake")
 endif()
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/CPM.cmake")
 
+set(ENABLE_CJSON_TEST OFF)
+
 CPMAddPackage(
   NAME ScratchEverywhere
   GITHUB_REPOSITORY ScratchEverywhere/ScratchEverywhere
